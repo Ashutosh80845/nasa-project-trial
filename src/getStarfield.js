@@ -1,8 +1,8 @@
 import * as THREE from "three";
 
-export default function getStarfield({ numStars = 500 } = {}) {
+export default function getStarfield({ numStars = 2000 } = {}) {
   function randomSpherePoint() {
-    const radius = Math.random() * 25 + 25;
+    const radius = Math.random() * 200 + 50; // expand radius so stars surround outer planets
     const u = Math.random();
     const v = Math.random();
     const theta = 2 * Math.PI * u;
@@ -25,19 +25,22 @@ export default function getStarfield({ numStars = 500 } = {}) {
     let p = randomSpherePoint();
     const { pos, hue } = p;
     positions.push(p);
-    col = new THREE.Color().setHSL(hue, 0.2, Math.random());
+    col = new THREE.Color().setHSL(hue, 0.2, Math.random() * 0.8 + 0.1);
     verts.push(pos.x, pos.y, pos.z);
     colors.push(col.r, col.g, col.b);
   }
   const geo = new THREE.BufferGeometry();
   geo.setAttribute("position", new THREE.Float32BufferAttribute(verts, 3));
   geo.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+  const starTex = new THREE.TextureLoader().load("./textures/stars/circle.png");
+  if ('colorSpace' in starTex) starTex.colorSpace = THREE.SRGBColorSpace; if ('encoding' in starTex) starTex.encoding = THREE.sRGBEncoding;
   const mat = new THREE.PointsMaterial({
-    size: 0.2,
+    size: 0.6,
+    sizeAttenuation: true,
     vertexColors: true,
-    map: new THREE.TextureLoader().load(
-      "./textures/stars/circle.png"
-    ),
+    map: starTex,
+    transparent: true,
+    alphaTest: 0.1,
   });
   const points = new THREE.Points(geo, mat);
   return points;

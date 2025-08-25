@@ -44,7 +44,7 @@ function getFresnelMat({rimHex = 0x0088ff, facingHex = 0x000000} = {}) {
     vertexShader: vs,
     fragmentShader: fs,
     transparent: true,
-    blending: THREE.AdditiveBlending,
+    blending: THREE.NormalBlending,
     // wireframe: true,
   });
   return fresnelMat;
